@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Check if the requested file or directory exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirect all other requests to route.php
+RewriteRule ^(.*)$ /routes/route.php [L,QSA]
