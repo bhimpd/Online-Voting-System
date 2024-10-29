@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -8,6 +8,8 @@ function Login() {
     password: ''
   });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +26,9 @@ function Login() {
     axios.post('http://localhost:8080/login', data)
       .then((response) => {
         setMessage('Login successful!');
+
+        // Redirect to the dashboard
+        navigate('/dashboard'); // Navigate to the Dashboard route
       })
       .catch((error) => {
         if (error.response && error.response.data && error.response.data.message) {

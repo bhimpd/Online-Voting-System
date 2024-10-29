@@ -6,7 +6,7 @@ class UserRegisterModel
 {
     private const TABLE_NAME = "users";
 
-    public static function createUser($name, $email, $password)
+    public static function createUser($name, $email, $password, $address, $mobile, $image, $role)
     {
         // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -15,8 +15,8 @@ class UserRegisterModel
         $db = Database::getConnection();
 
         // Prepare and execute the query
-        $query = "INSERT INTO " . self::TABLE_NAME . " (name, email, password, address, mobile, image, voter_role) VALUES (?, ?, ?)";
+        $query = "INSERT INTO " . self::TABLE_NAME . " (name, email, password, address, mobile, image, role) VALUES (?, ?, ?,?, ?, ?, ?)";
         $stmt = $db->prepare($query);
-        return $stmt->execute([$name, $email, $hashedPassword]);
+        return $stmt->execute([$name, $email, $hashedPassword,$address, $mobile, $image, $role]);
     }
 }

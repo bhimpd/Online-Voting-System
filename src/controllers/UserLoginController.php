@@ -13,14 +13,22 @@ class UserLoginController
         $email = isset($data['email']) ? $data['email'] : null;
         $password = isset($data['password']) ? $data['password'] : null;
 
+        
+
         // Check if both email and password are set
         if ($email && $password) {
             // Call the model to verify the user
             $user = UserLoginModel::getUserByEmail($email);
 
             if ($user) {
+                $passwordToHash = 'admin123';
+$hashedPassword = password_hash($passwordToHash, PASSWORD_DEFAULT);
+echo "pp" . $hashedPassword;
+die("fucker");
+
                 // Verify the password
                 if (password_verify($password, $user['password'])) {
+                    
                     // Successful login
                     http_response_code(200); // OK
                     echo json_encode(["message" => "Login successful.", "user" => $user]);
