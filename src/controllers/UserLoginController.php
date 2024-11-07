@@ -11,9 +11,7 @@ class UserLoginController
 
         // Store the email and password in separate variables
         $email = isset($data['email']) ? $data['email'] : null;
-        $password = isset($data['password']) ? $data['password'] : null;
-
-        
+        $password = isset($data['password']) ? trim($data['password']) : null;
 
         // Check if both email and password are set
         if ($email && $password) {
@@ -21,14 +19,10 @@ class UserLoginController
             $user = UserLoginModel::getUserByEmail($email);
 
             if ($user) {
-                $passwordToHash = 'admin123';
-$hashedPassword = password_hash($passwordToHash, PASSWORD_DEFAULT);
-echo "pp" . $hashedPassword;
-die("fucker");
+                // Check if password_verify matches
+                $valid = password_verify($password, $user['password']);
 
-                // Verify the password
-                if (password_verify($password, $user['password'])) {
-                    
+                if ($valid) {
                     // Successful login
                     http_response_code(200); // OK
                     echo json_encode(["message" => "Login successful.", "user" => $user]);
