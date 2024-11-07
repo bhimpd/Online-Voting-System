@@ -6,16 +6,16 @@ class UserRegisterModel
 {
     private const TABLE_NAME = "users";
 
-    public static function createUser($name, $email, $hashedPassword, $address, $mobile, $image, $role)
+    public static function createUser($name, $email, $hashedPassword, $address, $mobile, $image, $role, $status, $no_of_votes)
     {
        
         // Get database connection
         $db = Database::getConnection();
 
         // Prepare and execute the query
-        $query = "INSERT INTO " . self::TABLE_NAME . " (name, email, password, address, mobile, image, role) VALUES (?, ?, ?,?, ?, ?, ?)";
+        $query = "INSERT INTO " . self::TABLE_NAME . " (name, email, password, address, mobile, image, role, status, no_of_votes) VALUES (?, ?, ?,?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
-        return $stmt->execute([$name, $email, $hashedPassword,$address, $mobile, $image, $role]);
+        return $stmt->execute([$name, $email, $hashedPassword,$address, $mobile, $image, $role, $status, $no_of_votes]);
     }
 
      // Method to check if an email already exists

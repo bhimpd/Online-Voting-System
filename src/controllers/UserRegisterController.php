@@ -97,6 +97,10 @@ class UserRegisterController
             return;
         }
 
+        // Set default values for status and no_of_votes if not provided
+        $data['status'] = isset($data['status']) ? $data['status'] : 'not voted'; // Default to 'not voted'
+        $data['no_of_votes'] = isset($data['no_of_votes']) ? $data['no_of_votes'] : 0; // Default to 0 votes
+
         // Attempt to register the user
         try {
             $result = UserRegisterModel::createUser(
@@ -106,7 +110,9 @@ class UserRegisterController
                 $data['address'],
                 $data['mobile'],
                 $data['image'],
-                $data['role']
+                $data['role'],
+                $data['status'],
+                $data['no_of_votes']
             );
 
             if ($result) {

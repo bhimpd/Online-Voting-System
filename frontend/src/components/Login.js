@@ -10,7 +10,6 @@ function Login() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate(); // Initialize the useNavigate hook
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -26,6 +25,10 @@ function Login() {
     axios.post('http://localhost:8080/login', data)
       .then((response) => {
         setMessage('Login successful!');
+
+        // Store the user data in localStorage (or sessionStorage if you prefer session persistence)
+        localStorage.setItem('user', JSON.stringify(response.data.user)); // Save the user data
+        localStorage.setItem('authToken', response.data.token); // If you have a token for auth
 
         // Redirect to the dashboard
         navigate('/dashboard'); // Navigate to the Dashboard route

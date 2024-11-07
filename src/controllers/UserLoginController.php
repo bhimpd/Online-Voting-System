@@ -21,15 +21,12 @@ class UserLoginController
             if ($user) {
                 // Check if password_verify matches
                 $valid = password_verify($password, $user['password']);
-                echo "Password valid: " . ($valid ? "true" : "false") . "\n";
     
                 if ($valid) {
-                    echo "gone";
                     // Successful login
                     http_response_code(200); // OK
                     echo json_encode(["message" => "Login successful.", "user" => $user]);
                 } else {
-                    echo " out";
                     // Password does not match
                     http_response_code(401); // Unauthorized
                     echo json_encode(["message" => "Invalid password."]);
