@@ -6,11 +6,9 @@ class UserRegisterModel
 {
     private const TABLE_NAME = "users";
 
-    public static function createUser($name, $email, $password, $address, $mobile, $image, $role)
+    public static function createUser($name, $email, $hashedPassword, $address, $mobile, $image, $role)
     {
-        // Hash the password
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
+       
         // Get database connection
         $db = Database::getConnection();
 
