@@ -1,6 +1,6 @@
 <?php
 
-include_once __DIR__ . "/../cors.php"; // Correct path to cors.php
+include_once __DIR__ . "/../cors.php"; 
 
 // Helper function to send JSON responses
 function sendResponse($statusCode, $data) {
@@ -11,6 +11,7 @@ function sendResponse($statusCode, $data) {
 
 // Define constants for HTTP methods
 const HTTP_METHOD_POST = 'POST';
+const HTTP_METHOD_GET = 'GET';
 const HTTP_METHOD_NOT_ALLOWED = 405;
 const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 const HTTP_STATUS_NOT_FOUND = 404;
@@ -38,6 +39,10 @@ function route($endpoint, $method) {
             handleRoute('userLoginRoute.php', $method);
             break;
 
+        case 'getgroups':
+            handleGetGroupsRoute('getGroupsRoute.php', $method);
+            break;
+
         default:
             sendResponse(HTTP_STATUS_NOT_FOUND, ["message" => "Route not found"]);
             break;
@@ -47,8 +52,24 @@ function route($endpoint, $method) {
 function handleRoute($file, $method) {
     if ($method === HTTP_METHOD_POST) {
         $filePath = __DIR__ . "/$file";
+
         if (file_exists($filePath)) {
             include_once $filePath;
+        } else {
+            sendResponse(HTTP_STATUS_INTERNAL_SERVER_ERROR, ["message" => "Service unavailable"]);
+        }
+    } else {
+        sendResponse(HTTP_METHOD_NOT_ALLOWED, ["message" => "Method Not Allowed"]);
+    }
+}
+
+// Handle the 'getgroups' GET route
+function handleGetGroupsRoute($file, $method) {
+    if ($method === HTTP_METHOD_GET) {
+        $filePath = __DIR__ . "/$file"; 
+        
+        if (file_exists($filePath)) {
+            include_once $filePath;  // Include the file containing the logic for the getgroups endpoint
         } else {
             sendResponse(HTTP_STATUS_INTERNAL_SERVER_ERROR, ["message" => "Service unavailable"]);
         }

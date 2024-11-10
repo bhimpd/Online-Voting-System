@@ -6,7 +6,7 @@ class userLoginRoute
 {
     public static function login()
     {
-        UserLoginController::loginUser(); // Call the controller method
+        UserLoginController::loginUser(); 
     }
 }
 

@@ -6,7 +6,7 @@ class UserRegisterRoute
 {
     public static function register()
     {
-        UserRegisterController::registerUser(); // Call the controller method
+        UserRegisterController::registerUser(); 
     }
 }
 
