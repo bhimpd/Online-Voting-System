@@ -31,7 +31,7 @@ const App = () => {
           mobile: userData.mobile,
           status: userData.status,
           no_of_votes: userData.no_of_votes,
-          image: userData.image ? `http://localhost:8080/images/${userData.image}` : 'default-image.jpg' // Make sure the image path is correct
+          image: userData.image ? `http://localhost:8080/uploads/${userData.image}` : 'default-image.jpg' // Make sure the image path is correct
         });
       }
 

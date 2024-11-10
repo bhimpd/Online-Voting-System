@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Allow direct access to images in the uploads folder
+RewriteCond %{REQUEST_URI} ^/src/uploads/ [NC]
+RewriteRule ^ - [L]
+
 # Check if the requested file or directory exists
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

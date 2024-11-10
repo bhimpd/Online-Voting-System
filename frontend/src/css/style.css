@@ -42,3 +42,12 @@
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+.profile-image {
+    width: 100px;          /* Set the width to 100px */
+    height: 100px;         /* Set the height to 100px */
+    border-radius: 50%;    /* Make the image round by setting border radius to 50% */
+    object-fit: cover;     /* Ensure the image fills the container without distortion */
+    border: 2px solid #ccc; /* Optional: Add a border around the image */
+  }
+  
