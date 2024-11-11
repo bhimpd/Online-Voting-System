@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import '../css/style.css'; // Ensure this file contains your styles
+import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
 
 const App = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
-  // States to hold the user data
   const [user, setUser] = useState({
     name: '',
     address: '',
@@ -15,15 +14,13 @@ const App = () => {
     image: ''
   });
 
-  // State for loading indicator
+  const [groups, setGroups] = useState([]); // Store groups as an array
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching data from an API (replace with actual API call)
     const fetchUserData = async () => {
-      // Assuming you have already saved the user data in localStorage (adjust accordingly)
-      const userData = JSON.parse(localStorage.getItem('user')); 
-
+      const userData = JSON.parse(localStorage.getItem('user'));
       if (userData) {
         setUser({
           name: userData.name,
@@ -31,27 +28,43 @@ const App = () => {
           mobile: userData.mobile,
           status: userData.status,
           no_of_votes: userData.no_of_votes,
-          image: userData.image ? `http://localhost:8080/uploads/${userData.image}` : 'default-image.jpg' // Make sure the image path is correct
+          image: userData.image ? `http://localhost:8080/uploads/${userData.image}` : 'default-image.jpg'
         });
       }
-
-      setLoading(false); // Stop loading when data is fetched
+      setLoading(false);
     };
 
-    fetchUserData(); // Fetch user data when the component mounts
+    const fetchGroupData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/getgroups');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.users && data.users.length > 0) {
+            setGroups(data.users); // Set the groups data as an array
+          }
+        } else {
+          console.error('Failed to fetch groups');
+        }
+      } catch (error) {
+        console.error('Error fetching group data:', error);
+      }
+    };
+
+    fetchUserData();
+    fetchGroupData();
   }, []);
 
   const goBack = () => {
-    window.history.back(); // This will take the user to the previous page
+    window.history.back();
   };
 
   const logout = () => {
-    localStorage.removeItem('user'); // Clear user data from localStorage
-    navigate('/'); // Redirect to login page (or adjust if you have a specific logout endpoint)
+    localStorage.removeItem('user');
+    navigate('/');
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>; // Show loading state while data is being fetched
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -69,8 +82,7 @@ const App = () => {
       </div>
       <div className="content">
         <div id="profile">
-          {/* Ensure the profile image is displayed correctly */}
-          <img src={user.image} alt="User Image" className="profile-image" /> 
+          <img src={user.image} alt="User Image" className="profile-image" />
           <h2>Profile</h2>
           <h3>Name: {user.name}</h3>
           <h3>Address: {user.address}</h3>
@@ -79,8 +91,19 @@ const App = () => {
           <h3>No. of Votes: {user.no_of_votes}</h3>
         </div>
         <div id="group">
-          <h2>Group</h2>
-          <p>This is some random content for the group section.</p>
+          <h2>Groups</h2>
+          <p>Here are the groups and their votes:</p>
+
+          {/* Map over the groups array to display each group */}
+          <div className="user-list">
+            {groups.map((group, index) => (
+              <div key={index} className="group-item">
+                <h3>Group Name: {group.name}</h3>
+                <p>No. of Votes: {group.no_of_votes}</p>
+                <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group Image" className="group-image" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

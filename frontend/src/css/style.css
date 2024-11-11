@@ -43,7 +43,7 @@
     border-radius: 5px;
 }
 
-.profile-image {
+.profile-image, .group-image{
     width: 100px;          /* Set the width to 100px */
     height: 100px;         /* Set the height to 100px */
     border-radius: 50%;    /* Make the image round by setting border radius to 50% */
