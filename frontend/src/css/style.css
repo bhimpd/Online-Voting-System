@@ -48,6 +48,18 @@
     height: 100px;         /* Set the height to 100px */
     border-radius: 50%;    /* Make the image round by setting border radius to 50% */
     object-fit: cover;     /* Ensure the image fills the container without distortion */
-    border: 2px solid #ccc; /* Optional: Add a border around the image */
   }
   
+  .group-item{
+    border: 2px solid rgb(90, 183, 219);
+    margin :10px auto;
+    padding:5px;
+
+  }
+  .group-name-img{
+    display:flex;
+    justify-content: space-around;
+    text-align: center;
+    align-items: center;
+    
+  }
