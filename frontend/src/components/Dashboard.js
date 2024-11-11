@@ -98,9 +98,12 @@ const App = () => {
           <div className="user-list">
             {groups.map((group, index) => (
               <div key={index} className="group-item">
+                <div className='group-name-img'>
                 <h3>Group Name: {group.name}</h3>
-                <p>No. of Votes: {group.no_of_votes}</p>
                 <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group Image" className="group-image" />
+                </div>
+                <p>No. of Votes: {group.no_of_votes}</p>
+
               </div>
             ))}
           </div>
