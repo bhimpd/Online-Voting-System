@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../css/style.css';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 const App = () => {
   const navigate = useNavigate();
@@ -10,13 +11,12 @@ const App = () => {
     address: '',
     mobile: '',
     status: '',
-    no_of_votes: 0,
     image: ''
   });
 
-  const [groups, setGroups] = useState([]); // Store groups as an array
-
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasVoted, setHasVoted] = useState(false); // Track if the user has voted
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,7 +40,7 @@ const App = () => {
         if (response.ok) {
           const data = await response.json();
           if (data.users && data.users.length > 0) {
-            setGroups(data.users); // Set the groups data as an array
+            setGroups(data.users);
           }
         } else {
           console.error('Failed to fetch groups');
@@ -61,6 +61,21 @@ const App = () => {
   const logout = () => {
     localStorage.removeItem('user');
     navigate('/');
+  };
+
+  const handleVote = (groupId) => {
+    // Update the group votes
+    setGroups(prevGroups => 
+      prevGroups.map(group => 
+        group.id === groupId ? { ...group, no_of_votes: group.no_of_votes + 1 } : group
+      )
+    );
+
+    // Mark as voted
+    setHasVoted(true);
+
+    // Update the user's status to "voted"
+    setUser(prevUser => ({ ...prevUser, status: 'voted' }));
   };
 
   if (loading) {
@@ -87,8 +102,7 @@ const App = () => {
           <h3>Name: {user.name}</h3>
           <h3>Address: {user.address}</h3>
           <h3>Mobile: {user.mobile}</h3>
-          <h3>Status: {user.status}</h3>
-          <h3>No. of Votes: {user.no_of_votes}</h3>
+          <h3>Status: {user.status === 'voted' ? 'Voted' : 'Not Voted'}</h3>
         </div>
         <div id="group">
           <h2>Groups</h2>
@@ -99,11 +113,20 @@ const App = () => {
             {groups.map((group, index) => (
               <div key={index} className="group-item">
                 <div className='group-name-img'>
-                <h3>Group Name: {group.name}</h3>
-                <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group Image" className="group-image" />
+                  <h3>Group Name: {group.name}</h3>
+                  <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group Image" className="group-image" />
                 </div>
-                <p>No. of Votes: {group.no_of_votes}</p>
-
+                <div className='vote'>
+                  <p>No. of Votes: {group.no_of_votes}</p>
+                  <Button 
+                    variant="outlined" 
+                    color="primary" 
+                    onClick={() => handleVote(group.id)}
+                    disabled={hasVoted} // Disable all buttons if the user has voted
+                  >
+                    Vote
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
