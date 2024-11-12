@@ -11,6 +11,16 @@ class VoteController
         $groupId = isset($data['group_id']) ? (int)$data['group_id'] : null;
 
         if ($userId && $groupId) {
+            // Check if the user has already voted
+            $userStatus = VoteModel::getUserStatus($userId);
+            
+            if ($userStatus === 'voted') {
+                http_response_code(400);
+                echo json_encode(["message" => "You already voted."]);
+                return;
+            }
+
+            // Update the group's vote count if user hasn't voted yet
             $voteUpdated = VoteModel::updateVoteCount($groupId);
 
             if ($voteUpdated) {

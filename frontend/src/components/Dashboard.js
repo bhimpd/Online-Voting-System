@@ -16,20 +16,18 @@ const App = () => {
 
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [hasVoted, setHasVoted] = useState(false); // Track if the user has voted
+  const [hasVoted, setHasVoted] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const userData = JSON.parse(localStorage.getItem('user'));
       if (userData) {
         setUser({
-          name: userData.name,
-          address: userData.address,
-          mobile: userData.mobile,
-          status: userData.status,
-          no_of_votes: userData.no_of_votes,
+          ...userData,
           image: userData.image ? `http://localhost:8080/uploads/${userData.image}` : 'default-image.jpg'
         });
+        // Set hasVoted based on user's status from local storage
+        setHasVoted(userData.status === 'voted');
       }
       setLoading(false);
     };
@@ -39,9 +37,7 @@ const App = () => {
         const response = await fetch('http://localhost:8080/getgroups');
         if (response.ok) {
           const data = await response.json();
-          if (data.users && data.users.length > 0) {
-            setGroups(data.users);
-          }
+          setGroups(data.users || []);
         } else {
           console.error('Failed to fetch groups');
         }
@@ -63,19 +59,40 @@ const App = () => {
     navigate('/');
   };
 
-  const handleVote = (groupId) => {
-    // Update the group votes
-    setGroups(prevGroups => 
-      prevGroups.map(group => 
-        group.id === groupId ? { ...group, no_of_votes: group.no_of_votes + 1 } : group
-      )
-    );
+  const handleVote = async (groupId) => {
+    try {
+      const response = await fetch('http://localhost:8080/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          group_id: groupId
+        })
+      });
 
-    // Mark as voted
-    setHasVoted(true);
+      const result = await response.json();
 
-    // Update the user's status to "voted"
-    setUser(prevUser => ({ ...prevUser, status: 'voted' }));
+      if (response.ok) {
+        setGroups((prevGroups) =>
+          prevGroups.map((group) =>
+            group.id === groupId
+              ? { ...group, no_of_votes: group.no_of_votes + 1 }
+              : group
+          )
+        );
+        setHasVoted(true);
+        const updatedUser = { ...user, status: 'voted' };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        console.log("Vote cast successfully:", result.message);
+      } else {
+        console.error("Failed to cast vote:", result.message);
+      }
+    } catch (error) {
+      console.error("Error occurred while casting vote:", error);
+    }
   };
 
   if (loading) {
@@ -92,13 +109,12 @@ const App = () => {
       </div>
 
       <div className="user-info">
-        <h2>Welcome, {user.name} To The Voting Club.</h2>
+        <h2>Welcome, {user.name} To The Voting Zone.</h2>
         <i>"A single vote, a brighter hope"</i>
       </div>
       <div className="content">
         <div id="profile">
-          <img src={user.image} alt="User Image" className="profile-image" />
-          <h2>Profile</h2>
+          <img src={user.image} alt="User" className="profile-image" />
           <h3>Name: {user.name}</h3>
           <h3>Address: {user.address}</h3>
           <h3>Mobile: {user.mobile}</h3>
@@ -108,13 +124,12 @@ const App = () => {
           <h2>Groups</h2>
           <p>Here are the groups and their votes:</p>
 
-          {/* Map over the groups array to display each group */}
           <div className="user-list">
-            {groups.map((group, index) => (
-              <div key={index} className="group-item">
+            {groups.map((group) => (
+              <div key={group.id} className="group-item">
                 <div className='group-name-img'>
                   <h3>Group Name: {group.name}</h3>
-                  <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group Image" className="group-image" />
+                  <img src={`http://localhost:8080/uploads/${group.image}`} alt="Group" className="group-image" />
                 </div>
                 <div className='vote'>
                   <p>No. of Votes: {group.no_of_votes}</p>
@@ -122,7 +137,7 @@ const App = () => {
                     variant="outlined" 
                     color="primary" 
                     onClick={() => handleVote(group.id)}
-                    disabled={hasVoted} // Disable all buttons if the user has voted
+                    disabled={hasVoted}
                   >
                     Vote
                   </Button>
