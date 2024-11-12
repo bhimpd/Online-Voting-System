@@ -43,6 +43,10 @@ function route($endpoint, $method) {
             handleGetGroupsRoute('getGroupsRoute.php', $method);
             break;
 
+        case 'vote':
+            handleRoute('voteRoute.php', $method);
+            break;
+
         default:
             sendResponse(HTTP_STATUS_NOT_FOUND, ["message" => "Route not found"]);
             break;
