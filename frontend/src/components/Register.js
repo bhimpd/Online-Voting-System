@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate(); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -12,8 +12,8 @@ function Register() {
     confirmPassword: '',
     address: '',
     mobile: '',
-    role: '',
-    image: null // Handle file upload
+    role: 'voter',
+    image: '' 
   });
   const [message, setMessage] = useState('');
 
@@ -29,6 +29,29 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+
+    if (!formData.image) {
+      setMessage('Image is required.');
+      return;
+    }
+    
+    // Validate image type and size
+    if (formData.image) {
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      const maxSize = 2 * 1024 * 1024; // 2 MB
+
+      if (!allowedTypes.includes(formData.image.type)) {
+        setMessage("Invalid image type. Only JPEG, JPG, and PNG files are allowed.");
+        return;
+      }
+
+      if (formData.image.size > maxSize) {
+        setMessage("Image file size exceeds the 2MB limit.");
+        return;
+      }
+    }
+
+    // Proceed with form submission
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('email', formData.email);

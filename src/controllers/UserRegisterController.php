@@ -49,11 +49,14 @@ class UserRegisterController
             $imageSize = $_FILES['image']['size'];
             $imageType = $_FILES['image']['type'];
 
-            // Validate file type (allow only certain types, e.g., JPEG, PNG)
-            $allowedTypes = ['image/jpeg', 'image/png'];
-            if (!in_array($imageType, $allowedTypes)) {
-                http_response_code(400); 
-                echo json_encode(["message" => "Invalid image type. Only JPEG and PNG are allowed."]);
+            // Validate file type and extension (JPEG, JPG, PNG only)
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            $allowedExtensions = ['jpeg', 'jpg', 'png'];
+            $fileExtension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+
+            if (!in_array($imageType, $allowedTypes) || !in_array($fileExtension, $allowedExtensions)) {
+                http_response_code(400);
+                echo json_encode(["message" => "Invalid image type. Only JPEG, JPG, and PNG files are allowed."]);
                 return;
             }
 
