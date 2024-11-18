@@ -19,13 +19,13 @@ class VoteModel
     }
 
     // Increment vote count for the user if not yet voted
-    public static function updateVoteCount($userId)
+    public static function updateVoteCount($groupId)
     {
         $db = Database::getConnection();
 
         $query = "UPDATE " . self::TABLE_NAME . " SET no_of_votes = no_of_votes + 1 WHERE id = ?";
         $stmt = $db->prepare($query);
-        return $stmt->execute([$userId]);
+        return $stmt->execute([$groupId]);
     }
 
     // Update the user's voting status to 'voted'
