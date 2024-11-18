@@ -73,7 +73,7 @@ function handleGetGroupsRoute($file, $method) {
         $filePath = __DIR__ . "/$file"; 
         
         if (file_exists($filePath)) {
-            include_once $filePath;  // Include the file containing the logic for the getgroups endpoint
+            include_once $filePath;  
         } else {
             sendResponse(HTTP_STATUS_INTERNAL_SERVER_ERROR, ["message" => "Service unavailable"]);
         }
